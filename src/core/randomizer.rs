@@ -3,15 +3,13 @@ use rand::{
   seq::SliceRandom, SeedableRng,
 };
 use std::{
-  collections::{HashMap},
+  collections::HashMap,
   fs,
   path::{Path, PathBuf},
 };
 
-use crate::core::{
-  witness_data::{
-    AudioLog, DataStore, SoundDestination, SoundInsertion, SoundInsertionMap, SubsInsertionMap
-  },
+use crate::core::witness_data::{
+  AudioLog, DataStore, SoundDestination, SoundInsertion, SoundInsertionMap, SubsInsertionMap
 };
 
 pub fn randomize(seed: u64, src_dir: &Path) -> (SoundInsertionMap, SubsInsertionMap) {
@@ -46,7 +44,7 @@ pub fn randomize(seed: u64, src_dir: &Path) -> (SoundInsertionMap, SubsInsertion
     let insertion = SoundInsertion { source_file: audio, dest_file: filename };
 
     if inserted_logs.contains_key(&dest_pkg) {
-      let d: &mut Vec<SoundInsertion> = inserted_logs.get_mut(&dest_pkg).unwrap(); // TODO tidy this up
+      let d: &mut Vec<SoundInsertion> = inserted_logs.get_mut(&dest_pkg).unwrap();
       d.push(insertion); 
     } else {
       inserted_logs.insert(dest_pkg, vec![insertion]);

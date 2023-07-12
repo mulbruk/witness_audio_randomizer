@@ -1,4 +1,5 @@
 use anyhow::{anyhow, Result};
+use regex::Regex;
 use rust_embed::RustEmbed;
 use serde::{Serialize, Deserialize};
 use std::{
@@ -22,6 +23,7 @@ pub struct AudioLog {
   pub subtitle: String,
 }
 
+#[derive(Debug, Clone)]
 pub struct Subtitle {
   pub key: String,
   pub val: String,
@@ -53,7 +55,6 @@ fn tmp_dir_path(witness_dir: &Path) -> PathBuf { witness_dir.join(r"tmp") }
 fn subtitles_path(witness_dir: &Path) -> PathBuf { witness_dir.join(r"data\strings\en.subtitles") }
 fn subs_bak_path(witness_dir: &Path)  -> PathBuf { witness_dir.join(r"data\strings\en.subtitles.bak") }
 
-// TODO ???
 pub fn witness_dir_is_okay(witness_dir: &Path) -> bool {
   let data_dir = data_dir_path(witness_dir);
   let data_zip = data_zip_path(witness_dir);
@@ -154,16 +155,18 @@ pub fn load_subtitles(witness_dir: &Path) -> Result<Vec<Subtitle>> {
   let path = subtitles_path(witness_dir);
 
   let raw_subs = std::fs::read_to_string(path)?;
-  let raw_chunks = raw_subs.split("\n:");
+  let pattern = Regex::new(r"(?mR)^:").unwrap(); // (?mR) = multi-line mode + CRLF mode
+  let raw_chunks = pattern.split(&raw_subs);
   
-  raw_chunks.map(|chunk| {
+  raw_chunks.filter(|chunk| !chunk.trim().is_empty()).map(|chunk| {
     if let Some((key, val)) = chunk.split_once("\r\n") {
       Ok(Subtitle {
         key: key.trim().to_owned(),
         val: val.trim().to_owned(),
       })
     } else {
-      Err(anyhow!("Read bad chunk in subs file: {:?}", chunk))
+      log::error!("Read empty chunk in subs file: {:?}", chunk);
+      Err(anyhow!("Read empty chunk in subs file: {:?}", chunk))
     }
   }).collect()
 }
@@ -252,7 +255,7 @@ fn insert_sound_packaged(
   dest_pkg: PathBuf,
   witness_dir: &Path
 ) -> Result<()> {
-  let dest_pkg_stem = PathBuf::from(dest_pkg.file_stem().unwrap()); // TODO
+  let dest_pkg_stem = PathBuf::from(dest_pkg.file_stem().unwrap());
 
   let mut dest_pkg_path = PathBuf::new();
   dest_pkg_path.push(witness_dir);
@@ -305,9 +308,11 @@ fn compile_subtitles<W: Write>(
   inserted_subtitles: SubsInsertionMap,
   writeable: &mut W
 ) -> Result<()> {
+  // writeln! emits '\n' as line terminator for all platforms, so we need to explicitly add the
+  // carriage return to keep the subs file from getting mangled across multiple randomizations
   for Subtitle { key, val } in subtitles {
-    writeln!(writeable, ": {}", key)?;
-    writeln!(writeable, "")?;
+    writeln!(writeable, ": {}\r", key)?;
+    writeln!(writeable, "\r")?;
     if inserted_subtitles.contains_key(&key) {
       if let Some(path) = inserted_subtitles.get(&key).unwrap() {
         let text = match std::fs::read_to_string(path) {
@@ -318,15 +323,15 @@ fn compile_subtitles<W: Write>(
           }
         };
 
-        writeln!(writeable, "{}", text)?;
+        writeln!(writeable, "{}\r", text)?;
       } else {
-        writeln!(writeable, "")?;
+        writeln!(writeable, "\r")?;
       }
     } else {
-      writeln!(writeable, "{}", val)?;
+      writeln!(writeable, "{}\r", val)?;
     }
-    writeln!(writeable, "")?;
-    writeln!(writeable, "")?;
+    writeln!(writeable, "\r")?;
+    writeln!(writeable, "\r")?;
   }
 
   Ok(())

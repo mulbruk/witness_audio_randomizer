@@ -11,6 +11,7 @@ log = "0.4.19"
 native-windows-derive = "1.0.3"
 native-windows-gui = "1.0.13"
 rand = {version = "0.8.5", features =["std_rng"]}
+regex = "1.9.1"
 rust-embed = "6.6.1"
 serde = {version = "1.0", features = ["derive"]}
 serde_json = "1.0"

@@ -20,6 +20,7 @@ use crate::core::{
 
 use super::{
   create_backups::CreateBackupsDialogue,
+  feeling_lucky::FeelingLuckyWindow,
   message_box::MessageBox,
   randomizer::RandomizerWindow,
   restore_backups::RestoreBackupsDialogue,
@@ -114,6 +115,7 @@ pub struct RandoGui {
 
   #[nwg_control( text: "I'm feeling lucky", enabled: false )]
   #[nwg_layout_item(layout: grid, col: 7, row: 4, col_span: 4)]
+  #[nwg_events( OnButtonClick: [RandoGui::click_feeling_lucky_button])]
   oops_all_secret_of_psalm_46_button: nwg::Button,
 
   #[nwg_control( text: "Randomize", enabled: false )]
@@ -293,12 +295,18 @@ impl RandoGui {
     self.dialogue_opened();
   }
 
+  fn click_feeling_lucky_button(&self) {
+    let witness_dir = PathBuf::from( self.witness_dir_input.text() );
+
+    FeelingLuckyWindow::show(&witness_dir, self.dialogue_notice.sender());
+  }
+
   fn fill_input_from_dir_picker(&self, text_box: &nwg::TextInput, initial_dir: Option<&str>) {
     if let Some(dir) = self.show_directory_picker(initial_dir) {
       if let Some(str) = dir.to_str() {
         text_box.set_text(str);
       } else {
-        // TODO insert logging statement
+        // Nothing to do here
       }
     }
   }
