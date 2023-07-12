@@ -131,6 +131,7 @@ pub struct RandoGui {
 
 
 impl RandoGui {
+  #[allow(dead_code)]
   pub fn start(config: Config) -> rando_gui_ui::RandoGuiUi {
     let config = RefCell::new(config);
 
@@ -256,7 +257,7 @@ impl RandoGui {
       Ok(val) => val,
       Err(err) => {
         log::error!("Error reading subtitles file: {:?}", err);
-        MessageBox::show("Could not dump subtitles file. See `application.log` for details.", self.dialogue_notice.sender());
+        MessageBox::show("Could not dump subtitles file. See logs for more details.", self.dialogue_notice.sender());
         return
       }
     };
@@ -265,7 +266,7 @@ impl RandoGui {
       Ok(_) => {},
       Err(err) => {
         log::error!("Error dumping logs: {:?}", err);
-        MessageBox::show("Could not dump audio files. See `application.log` for details.", self.dialogue_notice.sender());
+        MessageBox::show("Could not dump audio files. See logs for more details.", self.dialogue_notice.sender());
         return
       }
     };

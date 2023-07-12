@@ -4,14 +4,10 @@ extern crate native_windows_gui as nwg;
 use anyhow::Result;
 use log;
 use simplelog;
-use std::{
-  fs,
-};
+use std::fs;
 
 mod core;
-use crate::core::{
-  config::Config,
-};
+use crate::core::config::Config;
 
 mod gui;
 use gui::RandoGui;

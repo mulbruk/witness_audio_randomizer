@@ -336,3 +336,32 @@ fn compile_subtitles<W: Write>(
 
   Ok(())
 }
+
+// ---------------------------------------------------------------------------------------------------
+// Test insertion
+
+pub fn insert_on_mountaintop(witness_dir: &Path, log_to_insert: &Path) -> Result<()> {
+  let insertion = SoundInsertion {
+    source_file: log_to_insert.to_owned(),
+    dest_file: PathBuf::from("schweickart_eva.sound")
+  };
+  let package = PathBuf::from("save_58408_0.pkg");
+
+  insert_sound_packaged(vec!((insertion)), package, witness_dir)?;
+
+  let subs_path = log_to_insert.with_extension("sub");
+  let new_subs = if subs_path.exists() {
+    Some(subs_path)
+  } else {
+    None
+  };
+
+  let subs = load_subtitles(witness_dir)?;
+
+  let mut map: SubsInsertionMap = HashMap::new();
+  map.insert("schweickart_eva".to_owned(), new_subs);
+
+  insert_subtitles(witness_dir, subs, map)?;
+
+  Ok(())
+}
