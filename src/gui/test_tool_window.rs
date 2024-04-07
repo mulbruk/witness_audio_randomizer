@@ -81,7 +81,7 @@ pub struct TestToolGui {
   // ---------------------------
   // Row 2
 
-  #[nwg_control( text: "Insert File", enabled: false )]
+  #[nwg_control( text: "Insert log", enabled: false )]
   #[nwg_layout_item(layout: grid, col: 16, row: 2, col_span: 4)]
   #[nwg_events( OnButtonClick: [TestToolGui::click_insert_button])]
   insert_button: nwg::Button,
