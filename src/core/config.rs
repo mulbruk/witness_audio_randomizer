@@ -15,7 +15,7 @@ impl Default for Config {
   fn default() -> Self {
     Config {
       witness_dir: PathBuf::from(r"C:\Program Files\Steam\steamapps\common\The Witness\"),
-      logs_dir: std::env::current_dir().unwrap(),
+      logs_dir: std::env::current_dir().unwrap().join("audio_logs"),
     }
   }
 }
