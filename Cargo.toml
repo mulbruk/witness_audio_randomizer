@@ -20,6 +20,9 @@ simplelog = "0.12.1"
 walkdir = "2.3"
 zip = "0.6.4"
 
+[profile.release]
+strip = true
+
 [[bin]]
 name = "witness_audio_randomizer"
 path = "src/main.rs"
