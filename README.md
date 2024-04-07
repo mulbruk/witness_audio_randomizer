@@ -2,7 +2,7 @@
 
 **Version 1.0: 'How many of you here have personally witnessed a total eclipse of the sun?' Edition (2024-04-08)**
 
-[![Video](https://img.youtube.com/vi/m_49375h2LY/maxresdefault.jpg)](https://www.youtube.com/watch?v=m_49375h2LY)
+[![Video](https://img.youtube.com/vi/m_49375h2LY/hqdefault.jpg)](https://www.youtube.com/watch?v=m_49375h2LY)
 
 ## What is it?
 
